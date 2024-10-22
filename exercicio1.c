@@ -7,13 +7,15 @@ struct diagonal {
 };
 typedef struct diagonal Diagonal;
 
+Diagonal menu_programa(Diagonal matriz);
+
 Diagonal cria_matriz(){
     Diagonal matriz;
     printf("\nDigite a dimensão da Matriz Diagonal:\n");
-    int ordem;
-    scanf("%d", &ordem);
+    size_t ordem;
+    scanf("%zu", &ordem);
 
-    int* vetor = (int *)malloc(sizeof(int)*ordem);
+    int* vetor = (int *)malloc(sizeof(int) * ordem);
     if (vetor == NULL){
         printf("Erro na alocacao.\n");
         exit(1);
@@ -34,11 +36,13 @@ Diagonal preenche_matriz (Diagonal matriz) {
 
 void imprime_matriz(Diagonal matriz) {
     int zero = 0;
-    printf("\n======== MATRIZ FINAL ========\n\n");
+    
+    printf("\n\n  MATRIZ FINAL: \n==============================\n\n");
+    
     for (int i = 0; i < matriz.ordem; i++){
         for (int j = 0; j < matriz.ordem; j++){
             if (i == j){
-                printf(" %5d", matriz.v);
+                printf(" %5d", matriz.v[i]);
             } else {
                 printf(" %5d", zero);
             }
@@ -47,19 +51,71 @@ void imprime_matriz(Diagonal matriz) {
     }
 }
 
-void consulta (Diagonal matriz) {
-    printf("Digite duas coordenadas para buscar na matriz \"x y\", ou \"-1\" para sair:\n");
+void consulta_matriz (Diagonal matriz) {
+    
     int num1, num2, result;
-    while (scanf("%d", &num1) != -1) {
-        scanf("%d", &n2);
-        if (num1 != num2){
-            result = 0;
-        } else {
-            
+    printf("\n\n========= CONSULTA MATRIZ ==========\n");
+    do {
+        printf("\nDigite duas coordenadas para buscar na matriz \"x y\", ou \"-1 -1\" para sair:\n");
+        scanf("%d %d", &num1, &num2);
+        if (num1 == -1 && num2 == -1){
+
+            break;
         }
-        for (int i = 0; i )
-    }
+        if (num1 >= 0 && num2 >= 0 && num1 < matriz.ordem && num2 < matriz.ordem) {
+            if (num1 != num2){
+                result = 0;
+            } else {
+                result = matriz.v[num1];
+            }
+            printf("==========\nNumero na posicao [%d][%d]: %d\n\n", num1, num2, result);
+        } else {
+            printf("===========\nEntrada invalida. Tente novamente.\n\n");
+        }
+        
+    } while (1);
+    menu_programa(matriz);
 }
+Diagonal menu_programa(Diagonal matriz) {
+    
+    while (1) {
+        int n; 
+
+        printf("\n================\nO que você deseja fazer agora?\n\n");
+        printf("[1] Inserir nova matriz\n");
+        printf("[2] Imprimir matriz\n");
+        printf("[3] Consultar matriz\n");
+        printf("[0] Sair\n\n");
+        
+        scanf("%d", &n);
+
+        switch(n) {
+            case 0:
+                printf("\n================\nFim do Programa.\n\n");
+                exit(0);
+            case 1:
+                matriz = cria_matriz();
+                matriz = preenche_matriz(matriz);
+                imprime_matriz(matriz);
+                break;
+
+            case 2:
+                imprime_matriz(matriz);
+                break;
+
+            case 3:
+                consulta_matriz(matriz);
+                break;
+
+            default:
+                printf("\nOpção inválida. Tente novamente.\n");
+                break;
+        }
+    }
+    return matriz;
+}
+
+
 int main() {
     Diagonal matriz;
     matriz = cria_matriz();
